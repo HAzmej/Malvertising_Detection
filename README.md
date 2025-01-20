@@ -47,6 +47,8 @@ Encodage des Urls
 ### 2.2 MicroService 2 : EasyOCR + BERT
 
 Transforme les images en valeurs numériques acceptées par le modéle
+  - EasyOCR : pour extraire le texte des images.
+  - BERT : pour encoder les textes extraits
 
 Pour ce faire: 
   - Lancer le serveur sur l'adresse `http://127.0.0.1:8000` : 
@@ -64,10 +66,14 @@ curl -X POST "http://127.0.0.1:8000/EasyOCR/" \ -H "Content-Type: application/js
 ### 2.3 MicroService 3 : Prédiction
 
 Récupére les 2 sorties des Microservices 1 et 2 et prédit le caractére de la publicités; le résultat est stocké dans `Resultat/Resultat_Prediction`
+
 ![Figure : Architecture de la prédiction](./predict.png)
+
 # Contact
 Questions ou Suggestions, n'hésite pas à me contacter à :
+
 📧 mejri.hazem2070@gmail.com
+
 📧 mejri@insa-toulouse.fr
 
 
