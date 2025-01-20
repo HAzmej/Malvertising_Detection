@@ -22,14 +22,14 @@ Le `main.py` génere le meilleur modéle entrainé sur le dataset trouvé en vé
   - L'**importance** des features.
 
 Les résultats de cette analyse sont enregistrés dans le dossier `Resultat`: 
-  - `Model_GR_Best.joblib` : Le modèle entraîné.
+  - `Model_GR_Best.joblib` : Le **Meilleur** modèle entraîné.
   - `StandardScaler.joblib` : Le scaler utilisé pour normaliser les données.
   - `One_Hot_Encoder.joblib` : L'encodeur des variables catégoriques.
   - `Word2Vec_model.model` : Le modèle Word2Vec utilisé pour encoder les URLs.
 
 Remarques:
 
-1. Les résultats des test sont stockés dans le dossier plot sous le nom :
+1. Les résultats des test sont stockés dans le dossier `plot` sous le nom :
   `{nom_model}_{%precision}.txt`
 
 2. Les hyperparametres optimaux pour chaque model sont enregistrés dans :
