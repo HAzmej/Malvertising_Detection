@@ -27,10 +27,12 @@ Les résultats de cette analyse sont enregistrés dans le dossier `Resultat`:
   - `One_Hot_Encoder.joblib` : L'encodeur des variables catégoriques.
   - `Word2Vec_model.model` : Le modèle Word2Vec utilisé pour encoder les URLs.
 
-NB: Les résultats des test sont stockés dans le dossier plot sous le nom :
+Remarques:
+
+1. Les résultats des test sont stockés dans le dossier plot sous le nom :
   `{nom_model}_{%precision}.txt`
 
-NB2: Les hyperparametres optimaux pour chaque model sont enregistrés dans :
+2. Les hyperparametres optimaux pour chaque model sont enregistrés dans :
   `Best_Models.joblib`
 
 ![Figure : Architecture de Train/Test](./testtrain.png)
