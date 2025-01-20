@@ -59,14 +59,14 @@ Transforme les images en valeurs numériques acceptées par le modéle
   - BERT : pour encoder les textes extraits.
 
 Pour ce faire: 
-  - Lancer le serveur sur l'adresse `http://127.0.0.1:8000` :
+  - Lancer le serveur sur l'adresse `http://127.0.0.1:8000/EasyOCR+BERT` :
 ```bash
 python MicroService2.py
 ```
 
   - API Post:
 ```bash
-curl -X POST "http://127.0.0.1:8000/EasyOCR/" \
+curl -X POST "http://127.0.0.1:8000/EasyOCR+BERT/" \
 -H "Content-Type: application/json" \
 -d '{"data": "./Dataset/NewDataset.csv", "screenshots_folder": "./"}'
 
