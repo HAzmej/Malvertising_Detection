@@ -37,7 +37,7 @@ Remarques:
 2. Les hyperparametres optimaux pour chaque model sont enregistrés dans :
   `Best_Models.joblib`
 
-![Figure : Architecture de Train/Test](./testtrain.png)
+![Figure : Architecture de Train/Test](./img/testtrain.png)
 
 ## 2. Prédiction
 
@@ -92,7 +92,7 @@ Récupére les 2 sorties des Microservices 1 et 2 et prédit le caractére de la
 
 Le résultat est stocké dans `Resultat/Resultat_Prediction`
 
-![Figure : Architecture de la prédiction](./predict.png)
+![Figure : Architecture de la prédiction](./img/predict.png)
 
 # Contact
 

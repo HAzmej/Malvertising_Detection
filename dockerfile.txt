@@ -1,0 +1,15 @@
+FROM python:3.9-slim
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+COPY main.py Extension.py ./ 
+COPY plugins/ ./plugins/
+COPY Dataset/ ./Dataset/
+COPY requirements.txt ./requirements.txt
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Étape 5 : Ajouter un point d'entrée
+ENTRYPOINT ["bash", "-c"]
+CMD ["python main.py && python Extension.py chemin_vers_dataset"]
