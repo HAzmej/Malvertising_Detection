@@ -4,9 +4,9 @@ Ce projet a pour but de détecter les publicités malveillantes. Pour ce faire o
 https://github.com/eric-zeng/conpro-bad-ads-data
 
 ## 1. Génerer un modéle
-
-[CMD] python main.py
-
+```bash
+python main.py
+```
 Le main.py génere le meilleur modéle entrainé sur le dataset trouvé en vérifiant:
   - Les hyperparametres
   - La Précision
