@@ -10,6 +10,8 @@ Avant d'exécuter ce projet, il faut installer les dépendances nécessaires
 pip install -r requirement.txt
 ```
 
+Récup le dossier `screenshots` du drive https://drive.google.com/file/d/12sCuxv38RPlrRKUs-hjl-JrTDQ4J_HcR/view?usp=sharing  
+
 ## 1. Génerer un modéle
 ```bash
 python main.py
