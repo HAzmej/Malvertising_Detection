@@ -50,6 +50,18 @@ Afin de prédire si une publicité est malveillante, le modéle a besoin de deux
 ### 2.1 MicroService 1 : Word2Vec
 
 Encodage des Urls 
+- Lancer le serveur sur l'adresse `http://127.0.0.1:8001` :
+```bash
+python MicroService1.py
+```
+
+- API Post:
+```bash
+curl -X POST "http://127.0.0.1:8001/Word2Vec/" \ -H "Content-Type: application/json" \ -d '{
+  "data": "./Dataset/NewDataset.csv"
+}'
+```
+
 
 ### 2.2 MicroService 2 : EasyOCR + BERT
 
@@ -59,17 +71,17 @@ Transforme les images en valeurs numériques acceptées par le modéle
   - BERT : pour encoder les textes extraits.
 
 Pour ce faire: 
-  - Lancer le serveur sur l'adresse `http://127.0.0.1:8000/EasyOCR+BERT` :
+  - Lancer le serveur sur l'adresse `http://127.0.0.1:8000` :
 ```bash
 python MicroService2.py
 ```
 
   - API Post:
 ```bash
-curl -X POST "http://127.0.0.1:8000/EasyOCR+BERT/" \
--H "Content-Type: application/json" \
--d '{"data": "./Dataset/NewDataset.csv", "screenshots_folder": "./"}'
-
+curl -X POST "http://127.0.0.1:8000/EasyOCR+BERT/" \ -H "Content-Type: application/json" \ -d '{
+  "data": "./Dataset/NewDataset.csv",
+  "screenshots_folder": "./"
+}'
 ```
 
 ### 2.3 MicroService 3 : Prédiction
