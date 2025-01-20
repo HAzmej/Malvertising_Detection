@@ -31,7 +31,7 @@ NB: Les résultats des test sont stockés dans le dossier plot sous le nom :
 NB2: Les hyperparametres optimaux pour chaque model sont enregistrés dans :
   `Best_Models.joblib`
 
-![Figure : Architecture de la prédiction](./TEST_TRAIN.drawio (3).png)
+![Figure : Architecture de la prédiction](./testtrain.png)
 ## 2. Prédiction
 ```bash
 python Extension.py <chemin_vers_dataset>
@@ -64,7 +64,7 @@ curl -X POST "http://127.0.0.1:8000/EasyOCR/" \ -H "Content-Type: application/js
 ### 2.3 MicroService 3 : Prédiction
 
 Récupére les 2 sorties des Microservices 1 et 2 et prédit le caractére de la publicités; le résultat est stocké dans `Resultat/Resultat_Prediction`
-![Figure : Architecture de la prédiction](./TEST_TRAIN.drawio (2).png)
+![Figure : Architecture de la prédiction](./predict.png)
 # Contact
 Questions ou Suggestions, n'hésite pas à me contacter à :
 📧 mejri.hazem2070@gmail.com
