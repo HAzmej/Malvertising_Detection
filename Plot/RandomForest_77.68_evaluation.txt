@@ -1,0 +1,16 @@
+Evaluation results for RandomForest:
+Accuracy: 77.68%
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.78      0.96      0.86       318
+           1       0.78      0.32      0.46       130
+
+    accuracy                           0.78       448
+   macro avg       0.78      0.64      0.66       448
+weighted avg       0.78      0.78      0.74       448
+
+Confusion Matrix:
+[[306  12]
+ [ 88  42]]
+Temps d'execution: 0.00 seconds

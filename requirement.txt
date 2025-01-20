@@ -1,0 +1,11 @@
+numpy
+maplotlib
+pandas
+seaborn
+torch
+easyocr
+transformers
+tldextract
+carbon
+joblib
+pillow

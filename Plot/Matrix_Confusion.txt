@@ -1,0 +1,9 @@
+      Model_Feature  True Positive Rate (TPR)  True Negative Rate (TNR)
+              0_MLP                  0.543478                  0.937500
+              1_MLP                  0.726190                  0.867816
+         0_Adaboost                  0.500000                  0.847222
+         1_Adaboost                  0.654762                  0.844828
+ 0_GradientBoosting                  0.565217                  0.979167
+ 1_GradientBoosting                  0.702381                  0.925287
+     0_RandomForest                  0.260870                  0.986111
+     1_RandomForest                  0.464286                  0.954023
