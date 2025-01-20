@@ -3,6 +3,12 @@
 Ce projet a pour but de détecter les publicités malveillantes. Pour ce faire on a décidé de génerer en premier temps un Modele de Machine Learning avec un dataset qu'on a récupéré sur GitHub: 
 https://github.com/eric-zeng/conpro-bad-ads-data
 
+## 0. Pré-requis
+Avant d'exécuter ce projet, il faut installer les dépendances nécessaires 
+```bash
+pip install -r requirements.txt
+```
+
 ## 1. Génerer un modéle
 ```bash
 python main.py
@@ -24,8 +30,9 @@ NB: Les résultats des test sont stockés dans le dossier plot sous le nom de **
 NB2: Les hyperparametres optimaux pour chaque model sont enregistrés dans **Best_Models.joblib**
 
 ## 2. Prédiction
-[CMD] python Extension.py <chemin_vers_dataset>
-
+```bash
+python Extension.py <chemin_vers_dataset>
+```
 Afin de prédire si une publicité est malveillante, le modéle à besoin de deux inputs:
   - Les URLs
   - Les images des publicités
@@ -39,12 +46,18 @@ Encodage des Urls
 Transforme les images en valeurs numériques acceptés par le modéle
 
 Pour ce faire: 
-  - Executer le fichier python MicroService.py
-  - [CMD] curl -X POST "http://127.0.0.1:8000/EasyOCR/" \ -H "Content-Type: application/json" \ -d '{
+  - Lancer le serveur sur l'adresse _http://127.0.0.1:8000_ : 
+```bash
+python MicroService2.py
+```
+-  API Post:
+```bash
+curl -X POST "http://127.0.0.1:8000/EasyOCR/" \ -H "Content-Type: application/json" \ -d '{
   "data": "./Dataset/NewDataset.csv",
   "screenshots_folder": "./"
 }'
+```
 
 ### 2.3 MicroService 3 : Prédiction
 
-Récupére les 2 sorties des Microservices 1 et 2 et prédit le caractére de la publicités; le résultat est stocké dans **Resultat/Resultat_prediction**
+Récupére les 2 sorties des Microservices 1 et 2 et prédit le caractére de la publicités; le résultat est stocké dans **Resultat/Resultat_Prediction**
