@@ -66,10 +66,10 @@ python MicroService2.py
 
   - API Post:
 ```bash
-curl -X POST "http://127.0.0.1:8000/EasyOCR/" \ -H "Content-Type: application/json" \ -d '{
-  "data": "./Dataset/NewDataset.csv",
-  "screenshots_folder": "./"
-}'
+curl -X POST "http://127.0.0.1:8000/EasyOCR/" \
+-H "Content-Type: application/json" \
+-d '{"data": "./Dataset/NewDataset.csv", "screenshots_folder": "./"}'
+
 ```
 
 ### 2.3 MicroService 3 : Prédiction
