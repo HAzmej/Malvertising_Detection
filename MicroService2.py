@@ -1,113 +1,40 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
 import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
+from plugins.process.EasyOCRClean import add_screenshot_text
+from transformers import pipeline
+from plugins.process.BERT import BERT_transform
 
-X_train_fin=pd.read_csv('Dataset/X_train.csv')
-X_test_fin=pd.read_csv('Dataset/X_test.csv')
-y_train=pd.read_csv('Dataset/y_train.csv')
-y_test=pd.read_csv('Dataset/y_test.csv')
+app = FastAPI()
 
-X=pd.read_csv('Dataset/EasyOCR+clean.csv')
-X=X.drop(columns="sample_type")
+# Définir le modèle de données attendu
+class DatasetInput(BaseModel):
+    data: str  # Chemin vers le fichier CSV contenant le dataset
+    screenshots_folder: str  # Chemin vers les screenshots
 
-#################################################################################  Model Checking ########################################################################
+# Initialiser le pipeline BERT pour l'analyse
+bert_pipeline = pipeline("text-classification", model="bert-base-uncased", return_all_scores=True)
 
-#####################################""   GridSearch sur pytorch  ############################################# 
-from plugins.ModelChecking.GSearchPytorch import grid_search
-from plugins.ModelChecking.Pytorch import model_pytroch
-from plugins.ModelChecking.TrainEvalPytorch import traineval
+@app.post("/EasyOCR/")
+async def EasyOCR(input_data: DatasetInput):
+    try:
+        # Charger le dataset à partir du chemin CSV
+        dataset = pd.read_csv(input_data.data)
 
-param_grid_pytroch = {
-    "batch_size": [16, 32, 64],
-    "hidden_units": [ 64,128,256,512],
-    "learning_rate": [0.01, 0.1],
-    "epochs": [500, 1000]
-}
-# params,acc,result= grid_search(param_grid_pytroch,X_train_fin,y_train,X_test_fin,y_test,model_pytroch,traineval)
-BATCH_SIZE = 64 #params['batch_size']
-HIDDEN_UNITS = 512 #params['hidden_units']
-LR = 0.0001 #params['learning_rate']
-EPOCHS = 1000 # params['epochs']
+        # Appeler la fonction EasyOCRClean pour traiter le dataset
+        updated_dataset = add_screenshot_text(dataset, input_data.screenshots_folder)
+        updated_dataset = updated_dataset.drop(updated_dataset[updated_dataset['ad_screenshot_text'] == ""].index)
 
-# print("Pytorch best model terminé: ", params)
+        # Ajouter une colonne pour les prédictions BERT
+        updated_dataset, bert = BERT_transform(updated_dataset)
 
-########################################    Création Pytorch     ############################################
+        # Convertir le DataFrame en JSON pour le retour
+        result = updated_dataset.to_dict(orient="records")
+        return {"message": "Dataset traité avec succès", "processed_data": result}
 
-from plugins.ModelChecking.Pytorch import model_pytroch
-model_py_best, X_train_py, y_train_py, X_test_py, y_test_py=model_pytroch(X_train_fin,y_train,X_test_fin,y_test,BATCH_SIZE,HIDDEN_UNITS)
-print("Pytorch Models terminé")
+    except Exception as e:
+        return {"error": f"Erreur lors du traitement : {str(e)}"}
 
-########################################    Entrainement Pytorch     ############################################
-from plugins.ModelChecking.TrainEvalPytorch import traineval
-loss,accur,best=traineval(model_py_best,X_train_py, y_train_py, X_test_py, y_test_py,LR,EPOCHS)
-print("Pytorch training termine")
-
-
-#######################################   Sauvegarde du modéle Pytorch    ############################################
-import torch
-torch.save(model_py_best.state_dict(), 'Best_Model_Pytorch.pth')
-import json
-params['acc']=round(best,2)
-with open('Pytorch_Best_Params.json', 'w') as f:
-        json.dump(params, f, indent=4)
-
-########################################    Récup models     ############################################
-from plugins.ModelChecking.ModelsList import models_test
-models=models_test(X_train_fin.shape[1])
-print("Import Models terminé")
-
-
-########################################    Entrainement    ############################################
-from plugins.ModelChecking.Entrainement import entrainement
-
-# entrainement(models,X_train_fin,X_test_fin,y_train,y_test)
-print("Checking terminé")
-
-######################################## Best Model #########################################
-from plugins.ModelChecking.GridSearch import Best_Model
-
-# Best_model=Best_Model(models,X_train_fin,y_train)
-print("Best Model terminé")
-
-#################################################################################  Evaluation  ################################################################################
-
-########################################     Evaluation   ####################################
-# import joblib
-# from joblib import load
-# best=load('Best_Models.joblib')
-from plugins.Evaluation.Evaluation import evaluation
-# model_best=evaluation(models,X_train_fin,X_test_fin,y_train,y_test)
-print("Best Model: ")
-# print(model_best)
-
-########################################     Impotance   ####################################
-
-X=X.drop(columns='ad_screenshot')
-X=X.drop(columns='page_screenshot')
-from plugins.Evaluation.Correlation import correlation
-# Matrice_correlation=correlation(models,X_train_fin,y_train,X.columns.tolist())
-print("Corrélation termine")
-
-
-########################################     Matrix Confusion   ####################################
-from plugins.Evaluation.MatrixConfusion import matrixconfusion
-
-# Matrice_Confusion=matrixconfusion(models,X_train_fin,y_train,X_test_fin,y_test)
-print("Matrice de confusion sur le type de la page terminée")
-
-
-##########################################################################    Prédiction      #################################################
-
-
-
-########################################  Prediction  ####################################### 
-from Predict import prediction
-
-# prediction(model_best,X_test_fin,y_test)
-print("BestModel prediction termine")
-
-#######################################       Prediction Pytorch       ######################################
-from plugins.Evaluation.PytorchPrediction import prediction_pytorch
-
-prediction_pytorch(model_py_best,X_test_py,y_test_py,loss,accur)
-print("Pytorch Prediction termine")
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
