@@ -1,6 +1,6 @@
 # Détection des Publicités Phishing
 
-Ce projet a pour but de détecter les publicités malveillantes. Pour ce faire on a décidé de génerer en premier temps un Modele de Machine Learning avec un dataset qu'on a récupéré sur GitHub: 
+Ce projet a pour but de détecter les publicités malveillantes. Pour ce faire on a décidé de génerer en premier temps un modèle de Machine Learning avec un dataset qu'on a récupéré sur GitHub: 
 https://github.com/eric-zeng/conpro-bad-ads-data
 
 ## 0. Pré-requis
@@ -17,9 +17,9 @@ python main.py
 
 Le `main.py` génere le meilleur modéle entrainé sur le dataset trouvé en vérifiant:
   - L'optimisation des **hyperparamètres**.
-  - La **Précision** du modèle
-  - L'analyse énergétique avec **CodeCarbon**
-  - L'**importance** des features
+  - La **Précision** du modèle.
+  - L'analyse énergétique avec **CodeCarbon**.
+  - L'**importance** des features.
 
 Les résultats de cette analyse sont enregistrés dans le dossier `Resultat`: 
   - `Model_GR_Best.joblib` : Le modèle entraîné.
@@ -44,8 +44,8 @@ python Extension.py <chemin_vers_dataset>
 ```
 
 Afin de prédire si une publicité est malveillante, le modéle a besoin de deux inputs:
-  - Les URLs
-  - Les images des publicités
+  - Les URLs.
+  - Les images des publicités.
     
 ### 2.1 MicroService 1 : Word2Vec
 
@@ -56,7 +56,7 @@ Encodage des Urls
 Transforme les images en valeurs numériques acceptées par le modéle
 
   - EasyOCR : pour extraire le texte des images.
-  - BERT : pour encoder les textes extraits
+  - BERT : pour encoder les textes extraits.
 
 Pour ce faire: 
   - Lancer le serveur sur l'adresse `http://127.0.0.1:8000` :
@@ -84,8 +84,10 @@ Le résultat est stocké dans `Resultat/Resultat_Prediction`
 
 Questions ou Suggestions, n'hésitez pas à me contacter à :
 
+📧 mejri@insa-toulouse.fr
+
 📧 mejri.hazem2070@gmail.com
 
-📧 mejri@insa-toulouse.fr
+
 
 
