@@ -16,9 +16,9 @@ class ScreenshotFolderInput(BaseModel):
 @app.post("/EasyOCR+BERT/")
 async def EasyOCRBERT(input_data: ScreenshotFolderInput):
     try:
-        # from codecarbon import EmissionsTracker  
-        # tracker = EmissionsTracker(output_dir="./M2")
-        # tracker.start()
+        from codecarbon import EmissionsTracker  
+        tracker = EmissionsTracker(output_dir="./M2")
+        tracker.start()
         base_folder = input_data.screenshots_folder
 
         if not os.path.exists(base_folder):
@@ -46,23 +46,23 @@ async def EasyOCRBERT(input_data: ScreenshotFolderInput):
 
         ad_screenshot_text= pd.DataFrame(text_results)
         ad_screenshot_text = ad_screenshot_text.drop(ad_screenshot_text[ad_screenshot_text['ad_screenshot_text'] == ""].index)
-        # emissions = tracker.stop()
+        emissions = tracker.stop()
 
-        # print(f"Carbon emissions for the code easyocr: {emissions} kg CO2")
+        print(f"Carbon emissions for the code easyocr: {emissions} kg CO2")
 
-        # from codecarbon import EmissionsTracker  
-        # tracker = EmissionsTracker(output_dir="./plot")
-        # tracker.start()
+        tracker = EmissionsTracker(output_dir="./Plot")
+        tracker.start()
         ### BERT
         ad_screenshot_text, bert = BERT_transform(ad_screenshot_text)
 
         # Convertir le DataFrame en JSON pour le retour
+        
         ad_screenshot_text.to_csv("./Dataset/BERT.csv")
         result = ad_screenshot_text.to_dict(orient="records")
 
-        # emissions = tracker.stop()
+        emissions = tracker.stop()
 
-        # print(f"Carbon emissions for the code bert: {emissions} kg CO2")
+        print(f"Carbon emissions for the code bert: {emissions} kg CO2")
         return {"message": "Dataset traité avec succès", "processed_data": result}
 
     except Exception as e:

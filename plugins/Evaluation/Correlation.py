@@ -53,14 +53,14 @@ def correlation(models,X_train,y_train,noms_features1):
         corr_values = [corr[0] for corr in Model_corr[n]]
         Correlation = corr_values[:-(306+768)]
         print(len(Correlation))
-        word2v = Model_corr[n][-300:][0]
+        Bert = Model_corr[n][-768:][0]
 
-        first_values = Model_corr[n][:-300][0]
+        first_values = Model_corr[n][:-768][0]
 
-        onehotencoder_var = first_values[-774:]
+        onehotencoder_var = first_values[-306:]
 
         tld = onehotencoder_var[:6] #name
-        Bert = onehotencoder_var[6:768] # TLD
+        word2v = onehotencoder_var[6:300] # TLD
 
         mean_tld = np.mean(tld)
         Correlation.append(mean_tld)
