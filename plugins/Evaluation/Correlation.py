@@ -2,7 +2,14 @@ def correlation(models,X_train,y_train,noms_features1):
     from numpy import ravel
     import numpy as np 
    
+    # models={
+    #     ('GradientBoosting',models)
+    # }
+
     import matplotlib.pyplot as plt
+    noms_features1[0]='Word2Vec'
+    noms_features1.append('One-hot encoder')
+    noms_features1.append('BERT')
     for name, model in models:
         y_train_flattened = ravel(y_train)
 
@@ -20,7 +27,7 @@ def correlation(models,X_train,y_train,noms_features1):
     noms_features=X_train.columns.tolist()
     from scipy.stats import pearsonr
     y_list = [y_pred_MLP,y_pred_Adaboost,y_pred_GradientBoosting,y_pred_RandomForest]
-    # y_list = [y_pred_MLP,y_pred_Adaboost, y_pred_GradientBoosting, y_pred_RandomForest]
+    # y_list = [y_pred_GradientBoosting]
     n = 0
     MLP_corr = []
     Adaboost_corr = []
@@ -56,11 +63,11 @@ def correlation(models,X_train,y_train,noms_features1):
         Bert = Model_corr[n][-768:][0]
 
         first_values = Model_corr[n][:-768][0]
-
+        
         onehotencoder_var = first_values[-306:]
 
-        tld = onehotencoder_var[:6] #name
-        word2v = onehotencoder_var[6:300] # TLD
+        tld = onehotencoder_var[:6] #tld
+        word2v = onehotencoder_var[6:300] # url
 
         mean_tld = np.mean(tld)
         Correlation.append(mean_tld)
@@ -68,12 +75,11 @@ def correlation(models,X_train,y_train,noms_features1):
         mean_bert = np.mean(Bert)
         Correlation.append(mean_bert)
         
-        mean_word2v = np.mean(word2v)
+        mean_word2v=np.mean(word2v)
         Correlation.insert(0, mean_word2v)
-        
-        noms_features1[0]='Word2Vec'
-        noms_features1.append('One-hot encoder')
-        noms_features1.append('BERT')
+
+        # print(noms_features1)
+
         plt.figure(figsize=(10, 6))
         plt.bar(noms_features1, Correlation, color='blue')
         plt.xlabel('Features')

@@ -1,0 +1,16 @@
+Evaluation results for Adaboost:
+Accuracy: 89.73%
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.93      0.93      0.93       331
+           1       0.80      0.81      0.81       117
+
+    accuracy                           0.90       448
+   macro avg       0.87      0.87      0.87       448
+weighted avg       0.90      0.90      0.90       448
+
+Confusion Matrix:
+[[307  24]
+ [ 22  95]]
+Temps d'execution: 0.33 seconds

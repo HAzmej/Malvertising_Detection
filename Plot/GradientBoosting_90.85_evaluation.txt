@@ -1,0 +1,16 @@
+Evaluation results for GradientBoosting:
+Accuracy: 90.85%
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.92      0.96      0.94       331
+           1       0.87      0.77      0.81       117
+
+    accuracy                           0.91       448
+   macro avg       0.89      0.86      0.88       448
+weighted avg       0.91      0.91      0.91       448
+
+Confusion Matrix:
+[[317  14]
+ [ 27  90]]
+Temps d'execution: 0.05 seconds
