@@ -57,6 +57,7 @@ async def EasyOCRBERT(input_data: ScreenshotFolderInput):
         ad_screenshot_text, bert = BERT_transform(ad_screenshot_text)
 
         # Convertir le DataFrame en JSON pour le retour
+        ad_screenshot_text.to_csv("./Dataset/BERT.csv")
         result = ad_screenshot_text.to_dict(orient="records")
 
         # emissions = tracker.stop()

@@ -34,7 +34,7 @@ def url_Word2vec(dataset,dataset1):
   encoded_test_df = pd.DataFrame(word2vec_var1, index=dataset1.index)
 
   encoded_train_df.columns = [f'Word2Vec {i}' for i in range(300)]
-  encoded_test_df.columns = [f'Word2Vec {i}' for i in range(768)]
+  encoded_test_df.columns = [f'Word2Vec {i}' for i in range(300)]
   
   
   dataset = pd.concat([dataset.drop(columns="parent_url"), encoded_train_df], axis=1)

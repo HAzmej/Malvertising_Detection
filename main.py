@@ -188,7 +188,7 @@ print("\n")
 
 
 from plugins.Evaluation.Correlation import correlation
-Matrice_correlation=correlation(model_best,X_train_fin,y_train,X.columns.tolist())
+Matrice_correlation=correlation(models_fit,X_train_fin,y_train,X.columns.tolist())
 
 ########################################     Matrix Confusion   ####################################
 from plugins.Evaluation.MatrixConfusion import matrixconfusion

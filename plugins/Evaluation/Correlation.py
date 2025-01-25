@@ -1,9 +1,7 @@
-def correlation(models1,X_train,y_train,noms_features1):
+def correlation(models,X_train,y_train,noms_features1):
     from numpy import ravel
     import numpy as np 
-    models={
-        ("GradientBoosting", models1)
-    }
+   
     import matplotlib.pyplot as plt
     for name, model in models:
         y_train_flattened = ravel(y_train)
@@ -21,9 +19,9 @@ def correlation(models1,X_train,y_train,noms_features1):
 
     noms_features=X_train.columns.tolist()
     from scipy.stats import pearsonr
-    y_list = [y_pred_GradientBoosting]
+    y_list = [y_pred_MLP,y_pred_Adaboost,y_pred_GradientBoosting,y_pred_RandomForest]
     # y_list = [y_pred_MLP,y_pred_Adaboost, y_pred_GradientBoosting, y_pred_RandomForest]
-    n = 2
+    n = 0
     MLP_corr = []
     Adaboost_corr = []
     GradientBoosting_corr = []
@@ -45,7 +43,7 @@ def correlation(models1,X_train,y_train,noms_features1):
         print("\n")
         n +=1
     # Model_corr = [MLP_corr,Adaboost_corr, GradientBoosting_corr, RandomForest_corr]
-    Model_corr = [GradientBoosting_corr]
+    Model_corr = [MLP_corr,Adaboost_corr,GradientBoosting_corr,RandomForest_corr]
     
     import os
     if not os.path.exists('./plot'):
