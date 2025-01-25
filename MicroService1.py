@@ -78,23 +78,24 @@ async def Word2Vecdef(input_data: DatasetInput):
         wv = preprocess_url(input_data.url)
         print(wv)
         word2vec_var = get_url_embedding(wv)
-        word2vec_var=np.vstack(word2vec_var)
-        print("\n")
         print(word2vec_var)
+        df = pd.DataFrame([word2vec_var], columns=[f"Word2Vec_{i}" for i in range(1, 301)])
+
         word2vec_var_df = pd.DataFrame(word2vec_var)
+        
         print(word2vec_var_df)
         ##  Sauvegarde word2vec dans .csv
-        word2vec_var_df.to_csv("./Dataset/Word2Vec_Test.csv")
+        df.to_csv("./Dataset/Word2Vec_Test.csv")
 
-        res = pd.concat([word2vec_var_df, ohencoder_df], axis=1)
+        res = pd.concat([df, ohencoder_df], axis=1)
 
-        # resultat = res.to_dict(orient="records")
+        resultat = res.to_dict(orient="records")
 
         emissions =  tracker.stop()
-        resultat = emissions.to_dict(orient="records")
+     
         print(f"Carbon emissions for the code word2vec: {emissions} kg CO2")
 
-        return {"message": "Dataset traité avec succès", "processed_data":resultat }
+        return {"message": "Dataset traité avec succès", "processed_data": resultat }
 
     except Exception as e:
         return {"error": f"Erreur lors du traitement : {str(e)}"}
