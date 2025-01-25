@@ -4,29 +4,64 @@ from pydantic import BaseModel
 import pandas as pd
 from plugins.process.EasyOCRClean import add_screenshot_text
 from plugins.process.BERT import BERT_transform
+import easyocr
+import os
+import pandas as pd
 
 app = FastAPI()
-
-
-class DatasetInput(BaseModel):
-    data: str  # Chemin vers le dataset
-    screenshots_folder: str  # Chemin vers les screenshots
+#####je change pour l'appliquer 
+class ScreenshotFolderInput(BaseModel):
+    screenshots_folder: str  # Chemin vers le dossier des screenshots
 
 @app.post("/EasyOCR+BERT/")
-async def EasyOCRBERT(input_data: DatasetInput):
+async def EasyOCRBERT(input_data: ScreenshotFolderInput):
     try:
-       
-        dataset = pd.read_csv(input_data.data)
+        # from codecarbon import EmissionsTracker  
+        # tracker = EmissionsTracker(output_dir="./M2")
+        # tracker.start()
+        base_folder = input_data.screenshots_folder
 
-       
-        updated_dataset = add_screenshot_text(dataset, input_data.screenshots_folder)
-        updated_dataset = updated_dataset.drop(updated_dataset[updated_dataset['ad_screenshot_text'] == ""].index)
+        if not os.path.exists(base_folder):
+            return {"error": "Le dossier fourni n'existe pas."}
 
-       
-        updated_dataset, bert = BERT_transform(updated_dataset)
+        
+        reader = easyocr.Reader(['en', 'fr'])
+
+        text_results = []
+        for image_file in os.listdir(base_folder):
+            image_path = os.path.join(base_folder, image_file)
+
+            
+            if os.path.isfile(image_path) and image_file.lower().endswith((".png", ".jpg", ".jpeg")):
+                try:
+                    text = reader.readtext(image_path, detail=0)  # detail=0 retourne uniquement le texte
+                    detected_text = ' '.join(text)
+                    print(f"Texte détecté pour {image_file}: {detected_text}")
+                except Exception as e:
+                    detected_text = f"Erreur lors du traitement de {image_file}: {str(e)}"
+
+                text_results.append({
+                    'ad_screenshot_text': detected_text
+                })
+
+        ad_screenshot_text= pd.DataFrame(text_results)
+        ad_screenshot_text = ad_screenshot_text.drop(ad_screenshot_text[ad_screenshot_text['ad_screenshot_text'] == ""].index)
+        # emissions = tracker.stop()
+
+        # print(f"Carbon emissions for the code easyocr: {emissions} kg CO2")
+
+        # from codecarbon import EmissionsTracker  
+        # tracker = EmissionsTracker(output_dir="./plot")
+        # tracker.start()
+        ### BERT
+        ad_screenshot_text, bert = BERT_transform(ad_screenshot_text)
 
         # Convertir le DataFrame en JSON pour le retour
-        result = updated_dataset.to_dict(orient="records")
+        result = ad_screenshot_text.to_dict(orient="records")
+
+        # emissions = tracker.stop()
+
+        # print(f"Carbon emissions for the code bert: {emissions} kg CO2")
         return {"message": "Dataset traité avec succès", "processed_data": result}
 
     except Exception as e:
