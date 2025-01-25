@@ -5,7 +5,8 @@ import joblib
 import torch
 import json
 
-dataset=pd.read_csv('Dataset/NewDataset.csv')
+dataset=pd.read_csv('Dataset/EasyOCR+clean.csv')
+
 
 ###############################################################################  Visualisation ##################################################################################
 from plugins.vizualiser import show_dataset, heatmap
@@ -25,13 +26,13 @@ print("Heatmap termine")
 from plugins.process.EasyOCRClean import add_screenshot_text
 
 base_folder = './'
-dataset=add_screenshot_text(dataset,base_folder)
+##dataset=add_screenshot_text(dataset,base_folder)
 print("EasyOcr termine")
 
 ############################################  Séparer train test  ####################################
 from sklearn.utils import shuffle
 labels=dataset["sample_type"]
-features=dataset.drop(columns="sample_type")
+features=dataset.drop(columns=["sample_type"])
 indices = shuffle(range(len(features)), random_state=1)
 features = features.iloc[indices]
 labels = labels.iloc[indices]
@@ -49,31 +50,32 @@ print("Standarisation termine")
 '''''Changement sur le dataset + renvoie de l'encodeur '''''
 from plugins.process.OHEncoder import ohencoder
 
-X_train_fit,X_test_fit, encoder=ohencoder(X_train_fit,X_test_fit)
+X_train_oh,X_test_oh, encoder=ohencoder(X_train_fit,X_test_fit)
 print("One Hot encoder termine")
+
+############################################    Word2Vec    #########################################""
+'''''Renvoie dataset ou l'url a ete transforme par des vecteurs word2vec, et les vecteurs'''''
+from plugins.process.Word2Vec import url_Word2vec
+
+X_train_word2vec, word2vec_train,X_test_word2vec, word2vec_test=url_Word2vec(X_train_oh,X_test_oh)
+print("Word2Vec termine")
 
 ###########################################   BERT    ###############################################
 '''''Renvoie (dataset orginial + liste de 768 colonnes de bert), Dataframe 768 colonnes de bert '''''
 "pip install transformers"
 from plugins.process.BERT import BERT_transform
 
-X_train_fit, bert_train= BERT_transform(X_train_fit)
-X_test_fit, bert_test= BERT_transform(X_test_fit)
+X_train_bert, bert_train= BERT_transform(X_train_word2vec)
+X_test_bert, bert_test= BERT_transform(X_test_word2vec)
 print("BERT termine")
 
-############################################    Word2Vec    #########################################""
-'''''Renvoie dataset ou l'url a ete transforme par des vecteurs word2vec, et les vecteurs'''''
-from plugins.process.Word2Vec import url_Word2vec
-
-X_train_fit, word2vec_train,X_test_fit, word2vec_test=url_Word2vec(X_train_fit,X_test_fit)
-print("Word2Vec termine")
 
 #############################################     Nettoyage   ####################################
 '''''''Renvoie dataset finale'''''''''
 from plugins.process.Nettoyage import nettoie
 
-X_train_fin=nettoie(X_train_fit)
-X_test_fin=nettoie(X_test_fit)
+X_train_fin=nettoie(X_train_bert)
+X_test_fin=nettoie(X_test_bert)
 y_train = y_train.replace({
     'news': 0,
     'adjusted_news':0,
@@ -174,20 +176,19 @@ print("Entrainement terminé")
 
 ########################################     Evaluation   ####################################
 from plugins.Evaluation.Evaluation import evaluation
-model_best , best_acc=evaluation(models_fit,X_train_fin,X_test_fin,y_train,y_test)
+model_best , best_acc=evaluation(models_fit,X_test_fin,y_test)
 print("Best Model: ")
 print(model_best)
 
-joblib.dump(model_best,'./Resultat/Model_GR_Best.joblib')
+joblib.dump(model_best,'./Resultat/Best_Model.joblib')
 print("\n")
 print("Enregistrement du meilleur modele dans ./Model_GR_Best.joblib ")
 print("\n")
 ########################################     Impotance   ####################################
 
-features=features.drop(columns='ad_screenshot')
-features=features.drop(columns='page_screenshot')
+
 from plugins.Evaluation.Correlation import correlation
-Matrice_correlation=correlation(models,X_train_fin,y_train,features.columns.tolist())
+Matrice_correlation=correlation(model_best,X_train_fin,y_train,X.columns.tolist())
 
 ########################################     Matrix Confusion   ####################################
 from plugins.Evaluation.MatrixConfusion import matrixconfusion
