@@ -17,7 +17,7 @@ class ScreenshotFolderInput(BaseModel):
 async def EasyOCRBERT(input_data: ScreenshotFolderInput):
     try:
         from codecarbon import EmissionsTracker  
-        tracker = EmissionsTracker(output_dir="./M2")
+        tracker = EmissionsTracker(output_dir="M2")
         tracker.start()
         base_folder = input_data.screenshots_folder
 
@@ -50,7 +50,7 @@ async def EasyOCRBERT(input_data: ScreenshotFolderInput):
 
         print(f"Carbon emissions for the code easyocr: {emissions} kg CO2")
 
-        tracker = EmissionsTracker(output_dir="./Plot")
+        tracker = EmissionsTracker(output_dir="M2")
         tracker.start()
         ### BERT
         ad_screenshot_text, bert = BERT_transform(ad_screenshot_text)
