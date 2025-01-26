@@ -5,26 +5,35 @@ def url_Word2vec(dataset,dataset1):
   import tldextract
 
   def preprocess_url(url):
-    extracted = tldextract.extract(url)
-    return [extracted.domain]
-
+    import re
+    list=[]
+        # Ajoutez 'www.' si le domaine ne commence pas par 'www.'
+    for u in url:
+      if not re.match(r'^https?://(www\.)?', u ):
+        url = re.sub(r'^(https?://)', r'\1www.', u)
+      extracted = tldextract.extract(u)
+      list.append([extracted.domain])
+    return list
   # Word2Vec
   from gensim.models import KeyedVectors
-  model = KeyedVectors.load_word2vec_format('./Resultat/GoogleNews-vectors-negative300.bin', binary=True)
+  model = KeyedVectors.load_word2vec_format('./Resultat/GoogleNews-vectors-negative300.bin', binary=True )
  
   def get_url_embedding(url_tokens):
     """
     Calcule l'embedding moyen des tokens d'une URL.
     """
-    token_embeddings = [model[token] for token in url_tokens if token in model]
+    token_embeddings = [model[url_tokens] for token in url_tokens if token in model]
     if token_embeddings:
-      return np.mean(token_embeddings, axis=0)  # Moyenne des vecteurs
+      return np.mean(token_embeddings, axis=0) 
     else:
       return np.zeros(model.vector_size) 
   
-  print(dataset.columns)
-  dataset['parent_url'] = dataset['parent_url'].apply(preprocess_url)
-  dataset1['parent_url'] = dataset1['parent_url'].apply(preprocess_url)
+  print(dataset.head())
+  vv = preprocess_url(dataset['parent_url'] )
+  print(vv)
+  print("\n")
+  vv1 = preprocess_url(dataset1['parent_url'])
+  print(vv1)
   print(dataset.columns)
   word2vec_var = dataset['parent_url'].apply(get_url_embedding)
   word2vec_var1 = dataset1['parent_url'].apply(get_url_embedding)

@@ -16,8 +16,10 @@ def ohencoder(X_train,X_test):
         list.append(extracted.suffix)
     return list
       
-  encoder = OneHotEncoder(sparse=False)
+  # encoder = OneHotEncoder(sparse=False)
+
   string_features=['parent_url']
+
   def manual_ohencoder(tldss):
     with open('./tld.txt', 'r') as file:
       tlds = file.readlines()
@@ -27,11 +29,20 @@ def ohencoder(X_train,X_test):
       tlds_lower = [tld.lower() for tld in tlds]
 
       
-      df = pd.DataFrame([tlds_lower], columns=tlds_lower)
+      df = pd.DataFrame(index=tldss.index, columns=tlds_lower)
+      print("je suis laa ezeb")
+      
+      print(tldss)
+      ind=tldss.index
       n=0
-      for t in tldss:
-        df.loc[n] = [1 if col == t else 0 for col in df.columns]
+      for t in tldss["parent_url"]:
+        for col in df.columns.values: 
+          if col == t:
+            df.loc[ind[n]]=1
+          else: 
+            df.loc[ind[n]]=0 
         n+=1
+      print(df)
     return df
   # Strings = encoder.fit_transform(X_train[string_features].apply(extract_first_level_tld))
   # Strings2 = encoder.transform(X_test[string_features].apply(extract_first_level_tld))
@@ -39,7 +50,6 @@ def ohencoder(X_train,X_test):
   tld2 = X_test[string_features].apply(extract_first_level_tld)
   encoded_train_df=manual_ohencoder(tld)
   encoded_test_df=manual_ohencoder(tld2)
-
   X_train_fit = pd.concat([X_train, encoded_train_df], axis=1)
   X_test_fit = pd.concat([X_test, encoded_test_df], axis=1)
   print(X_test_fit.columns)
