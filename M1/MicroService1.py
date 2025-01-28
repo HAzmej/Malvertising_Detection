@@ -22,9 +22,7 @@ async def Word2Vecdef(input_data: DatasetInput):
         tracker.start()
         #####   feature engineering standard scaler
 
-        scaler = joblib.load("./StandardScaler.joblib")
-
-
+        scaler = joblib.load("./M1/StandardScaler.joblib")
 
         #####   One hot encoder
         def extract_first_level_tld(url):
@@ -117,6 +115,8 @@ async def Word2Vecdef(input_data: DatasetInput):
         return {"message": "Dataset traité avec succès", "processed_data": resultat }
 
     except Exception as e:
+        emissions =  tracker.stop()
+        print(f"Carbon emissions for the code Onehot_encoder: {emissions} kg CO2")
         return {"error": f"Erreur lors du traitement : {str(e)}"}
 
 if __name__ == "__main__":

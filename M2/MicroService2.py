@@ -6,18 +6,21 @@ from BERT import BERT_transform
 import easyocr
 import os
 import pandas as pd
+from codecarbon import EmissionsTracker 
 
 app = FastAPI()
 #####je change pour l'appliquer 
 class ScreenshotFolderInput(BaseModel):
     screenshots_folder: str  # Chemin vers le dossier des screenshots
 
-@app.post("/EasyOCR+BERT/")
+@app.post("/EasyOCR_BERT/")
 async def EasyOCRBERT(input_data: ScreenshotFolderInput):
     try:
-        from codecarbon import EmissionsTracker  
+        print("IN") 
         tracker = EmissionsTracker(output_dir="./")
         tracker.start()
+
+
         base_folder = input_data.screenshots_folder
 
         if not os.path.exists(base_folder):
@@ -31,7 +34,7 @@ async def EasyOCRBERT(input_data: ScreenshotFolderInput):
             image_path = os.path.join(base_folder, image_file)
 
             
-            if os.path.isfile(image_path) and image_file.lower().endswith((".png", ".jpg", ".jpeg")):
+            if os.path.isfile(image_path) and image_file.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
                 try:
                     text = reader.readtext(image_path, detail=0)  # detail=0 retourne uniquement le texte
                     detected_text = ' '.join(text)
@@ -65,6 +68,8 @@ async def EasyOCRBERT(input_data: ScreenshotFolderInput):
         return {"message": "Dataset traité avec succès", "processed_data": result}
 
     except Exception as e:
+        emissions = tracker.stop()
+        print(f"Carbon emissions for the code bert: {emissions} kg CO2")
         return {"error": f"Erreur lors du traitement : {str(e)}"}
 
 if __name__ == "__main__":
