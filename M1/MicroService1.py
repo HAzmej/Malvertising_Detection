@@ -23,7 +23,7 @@ async def Word2Vecdef(input_data: DatasetInput):
         tracker.start()
         #####   feature engineering standard scaler
 
-        scaler = joblib.load("./StandardScaler.joblib")
+        scaler = joblib.load("./M1/StandardScaler.joblib")
         vs=pd.DataFrame(input_data)
         vs = vs.rename(columns={1: "parent_url"})
         print(vs)
@@ -145,7 +145,7 @@ async def Word2Vecdef(input_data: DatasetInput):
         
         
         ##  Sauvegarde word2vec dans .csv
-        word2vec_var.to_csv("../Dataset/Word2Vec_Test.csv")
+        word2vec_var.to_csv("./Dataset/Word2Vec_Test.csv")
         word2vec_var.index=ohencoder_df.index
         res = pd.concat([word2vec_var, ohencoder_df], axis=1)
         ss.index=res.index
