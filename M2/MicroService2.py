@@ -2,8 +2,7 @@ import fastapi
 from fastapi import FastAPI
 from pydantic import BaseModel
 import pandas as pd
-from plugins.process.EasyOCRClean import add_screenshot_text
-from plugins.process.BERT import BERT_transform
+from BERT import BERT_transform
 import easyocr
 import os
 import pandas as pd
@@ -17,7 +16,7 @@ class ScreenshotFolderInput(BaseModel):
 async def EasyOCRBERT(input_data: ScreenshotFolderInput):
     try:
         from codecarbon import EmissionsTracker  
-        tracker = EmissionsTracker(output_dir="M2")
+        tracker = EmissionsTracker(output_dir="./")
         tracker.start()
         base_folder = input_data.screenshots_folder
 
@@ -50,7 +49,7 @@ async def EasyOCRBERT(input_data: ScreenshotFolderInput):
 
         print(f"Carbon emissions for the code easyocr: {emissions} kg CO2")
 
-        tracker = EmissionsTracker(output_dir="M2")
+        tracker = EmissionsTracker(output_dir="./")
         tracker.start()
         ### BERT
         ad_screenshot_text, bert = BERT_transform(ad_screenshot_text)
@@ -70,4 +69,4 @@ async def EasyOCRBERT(input_data: ScreenshotFolderInput):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=50003)

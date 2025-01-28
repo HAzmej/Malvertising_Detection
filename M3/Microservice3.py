@@ -5,24 +5,25 @@ from pydantic import BaseModel
 app = FastAPI()
 
 class DatasetInput(BaseModel):
-    data: str  # Chemin vers le dataset contenant les urls
+    m2: str
+    m3: str
+
+    
 
 
 @app.get("/predict/")
-async def Word2Vecdef(input_data: DatasetInput):
+async def predict(input_data: DatasetInput):
     try:
-        ad_images=pd.read_csv("./Dataset/BERT.csv")
-        OHencoder=pd.read_csv("./Dataset/OHencoder_test.csv")
-        word2vec=pd.read_csv("./Dataset/Word2Vec_Test.csv")
-
-        OHencoder_len_bert = pd.DataFrame([OHencoder.values] * len(ad_images), columns=OHencoder.columns).reset_index(drop=True)
+        ad_images=input_data.m3
+        word2vec=input_data.m2
+       
         word2vec_len_bert = pd.DataFrame([word2vec.values] * len(ad_images), columns=word2vec.columns).reset_index(drop=True)
 
-        urls = pd.concat([OHencoder_len_bert, word2vec_len_bert], axis=1)
+        urls = pd.concat([word2vec_len_bert, word2vec_len_bert], axis=1)
 
         dataset = pd.concat([urls, ad_images], axis=1)
 
-        Malvertising_Model=load("./Resultat/Best_Model.joblib")
+        Malvertising_Model=load("./Best_Model.joblib")
 
         y_pred=Malvertising_Model.predict(dataset)
         y_pred=y_pred.astype(bool)
@@ -36,5 +37,5 @@ async def Word2Vecdef(input_data: DatasetInput):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8002)
+    uvicorn.run(app, host="127.0.0.1", port=500004)
 

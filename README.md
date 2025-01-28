@@ -52,16 +52,16 @@ Afin de prédire si une publicité est malveillante, le modéle a besoin de deux
 ### 2.1 MicroService 1 : Feature Engineering + One-Hot Encoder + Word2Vec
 
 Encodage des Urls 
-- Lancer le serveur sur l'adresse `http://127.0.0.1:8001` :
+- Lancer le serveur sur l'adresse `http://127.0.0.1:50002` :
 ```bash
 python MicroService1.py
 ```
 
 - API Post:
 ```bash
-curl -X POST "http://127.0.0.1:8001/Word2Vec/" \ 
+curl -X POST "http://127.0.0.1:50002/Word2Vec/" \ 
 -H "Content-Type: application/json" \ 
--d '{ "data": "URL"
+-d '{ "url": "URL"
 }'
 ```
 
@@ -74,14 +74,14 @@ Transforme les images en valeurs numériques acceptées par le modéle
   - BERT : pour encoder les textes extraits.
 
 Pour ce faire: 
-  - Lancer le serveur sur l'adresse `http://127.0.0.1:8000` :
+  - Lancer le serveur sur l'adresse `http://127.0.0.1:50003` :
 ```bash
 python MicroService2.py
 ```
 
   - API Post:
 ```bash
-curl -X POST "http://127.0.0.1:8000/EasyOCR+BERT/" \ 
+curl -X POST "http://127.0.0.1:50003/EasyOCR+BERT/" \ 
 -H "Content-Type: application/json" \ 
 -d '{ "screenshots_folder": <chemin_vers_dossier_screesnhots>
 }'

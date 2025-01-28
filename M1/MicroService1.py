@@ -12,17 +12,17 @@ from codecarbon import EmissionsTracker
 app = FastAPI()
 
 class DatasetInput(BaseModel):
-    url: str  # Chemin vers le dataset contenant les urls
+    url: str  
 
 
 @app.post("/Word2Vec/")
 async def Word2Vecdef(input_data: DatasetInput):
     try:
-        tracker = EmissionsTracker(output_dir="M1")
+        tracker = EmissionsTracker(output_dir="./")
         tracker.start()
         #####   feature engineering standard scaler
 
-        scaler = joblib.load("./Resultat/StandardScaler.joblib")
+        scaler = joblib.load("./StandardScaler.joblib")
 
 
 
@@ -68,18 +68,16 @@ async def Word2Vecdef(input_data: DatasetInput):
         # ohencoder_df=encoder.transform(ohencoder_df)
         # ohencoder_df = pd.DataFrame(ohencoder_df)
         print("j'ai finis")
-        print(ohencoder_df)
-        ohencoder_df.to_csv("./Dataset/OHencoder_test.csv")
         
         emissions =  tracker.stop()
         print(f"Carbon emissions for the code Onehot_encoder: {emissions} kg CO2")
         
         #######     word2vec
-        tracker = EmissionsTracker(output_dir="./M1")
+        tracker = EmissionsTracker(output_dir="./")
         tracker.start()
 
         ###     Load modele pré entrainé recupere sur 3 millions de github
-        word2vecmodel = KeyedVectors.load_word2vec_format('./Resultat/GoogleNews-vectors-negative300.bin', binary=True)
+        word2vecmodel = KeyedVectors.load_word2vec_format('./GoogleNews-vectors-negative300.bin', binary=True)
 
         def preprocess_url(url):
             extracted = tldextract.extract(url)
@@ -123,7 +121,7 @@ async def Word2Vecdef(input_data: DatasetInput):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8001)
+    uvicorn.run(app, host="127.0.0.1", port=50002)
 
 
 
