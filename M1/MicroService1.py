@@ -7,6 +7,7 @@ import numpy as np
 import joblib
 from joblib import load
 from gensim.models import KeyedVectors
+from features import featureengineering
 import codecarbon
 from codecarbon import EmissionsTracker  
 app = FastAPI()
@@ -23,7 +24,12 @@ async def Word2Vecdef(input_data: DatasetInput):
         #####   feature engineering standard scaler
 
         scaler = joblib.load("./StandardScaler.joblib")
-
+        vs=pd.DataFrame(input_data)
+        vs = vs.rename(columns={1: "parent_url"})
+        print(vs)
+        ss=featureengineering(vs)
+        numeric_columns = ss.select_dtypes(include=['int64', 'float64']).columns
+        ss[numeric_columns]=scaler.transform(ss[numeric_columns])
         #####   One hot encoder
         def extract_first_level_tld(url):
             list = []
@@ -141,6 +147,8 @@ async def Word2Vecdef(input_data: DatasetInput):
         word2vec_var.to_csv("../Dataset/Word2Vec_Test.csv")
         word2vec_var.index=ohencoder_df.index
         res = pd.concat([word2vec_var, ohencoder_df], axis=1)
+        ss.index=res.index
+        res=pd.concat([ss,res],axis=1)
         res.to_csv("../test.csv")
         resultat = res.to_dict(orient="records")
 
