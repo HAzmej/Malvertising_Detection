@@ -19,8 +19,8 @@ class DatasetInput(BaseModel):
 @app.post("/Word2Vec/")
 async def Word2Vecdef(input_data: DatasetInput):
     try:
-        # tracker = EmissionsTracker(output_dir="./")
-        # tracker.start()
+        tracker = EmissionsTracker(output_dir="./")
+        tracker.start()
         #####   feature engineering standard scaler
 
         scaler = joblib.load("./StandardScaler.joblib")
@@ -30,6 +30,7 @@ async def Word2Vecdef(input_data: DatasetInput):
         ss=featureengineering(vs)
         numeric_columns = ss.select_dtypes(include=['int64', 'float64']).columns
         ss[numeric_columns]=scaler.transform(ss[numeric_columns])
+
         #####   One hot encoder
         def extract_first_level_tld(url):
             list = []
@@ -73,12 +74,12 @@ async def Word2Vecdef(input_data: DatasetInput):
         # ohencoder_df = pd.DataFrame(ohencoder_df)
         print("j'ai finis")
         
-        # emissions =  tracker.stop()
-        # print(f"Carbon emissions for the code Onehot_encoder: {emissions} kg CO2")
+        emissions =  tracker.stop()
+        print(f"Carbon emissions for the code Onehot_encoder: {emissions} kg CO2")
         
         # #######     word2vec
-        # tracker = EmissionsTracker(output_dir="./")
-        # tracker.start()
+        tracker = EmissionsTracker(output_dir="./")
+        tracker.start()
 
         ###     Load modele pré entrainé recupere sur 3 millions de github
         word2vecmodel = KeyedVectors.load_word2vec_format('./GoogleNews-vectors-negative300.bin', binary=True)
@@ -152,15 +153,15 @@ async def Word2Vecdef(input_data: DatasetInput):
         res.to_csv("../test.csv")
         resultat = res.to_dict(orient="records")
 
-        # emissions =  tracker.stop()
+        emissions =  tracker.stop()
      
-        # print(f"Carbon emissions for the code word2vec: {emissions} kg CO2")
+        print(f"Carbon emissions for the code word2vec: {emissions} kg CO2")
 
         return {"message": "Dataset traité avec succès", "processed_data": resultat }
 
     except Exception as e:
-        # emissions =  tracker.stop()
-        # print(f"Carbon emissions for the code Onehot_encoder: {emissions} kg CO2")
+        emissions =  tracker.stop()
+        print(f"Carbon emissions for the code Onehot_encoder: {emissions} kg CO2")
         return {"error": f"Erreur lors du traitement : {str(e)}"}
 
 if __name__ == "__main__":
