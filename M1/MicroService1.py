@@ -18,11 +18,11 @@ class DatasetInput(BaseModel):
 @app.post("/Word2Vec/")
 async def Word2Vecdef(input_data: DatasetInput):
     try:
-        tracker = EmissionsTracker(output_dir="./")
-        tracker.start()
+        # tracker = EmissionsTracker(output_dir="./")
+        # tracker.start()
         #####   feature engineering standard scaler
 
-        scaler = joblib.load("./M1/StandardScaler.joblib")
+        scaler = joblib.load("./StandardScaler.joblib")
 
         #####   One hot encoder
         def extract_first_level_tld(url):
@@ -67,12 +67,12 @@ async def Word2Vecdef(input_data: DatasetInput):
         # ohencoder_df = pd.DataFrame(ohencoder_df)
         print("j'ai finis")
         
-        emissions =  tracker.stop()
-        print(f"Carbon emissions for the code Onehot_encoder: {emissions} kg CO2")
+        # emissions =  tracker.stop()
+        # print(f"Carbon emissions for the code Onehot_encoder: {emissions} kg CO2")
         
-        #######     word2vec
-        tracker = EmissionsTracker(output_dir="./")
-        tracker.start()
+        # #######     word2vec
+        # tracker = EmissionsTracker(output_dir="./")
+        # tracker.start()
 
         ###     Load modele pré entrainé recupere sur 3 millions de github
         word2vecmodel = KeyedVectors.load_word2vec_format('./GoogleNews-vectors-negative300.bin', binary=True)
@@ -81,42 +81,78 @@ async def Word2Vecdef(input_data: DatasetInput):
             extracted = tldextract.extract(url)
             return [extracted.domain]
         
-        def get_url_embedding(url_tokens):
+        def get_url_embedding(url_tokens_list):
             """
-            Calcule l'embedding moyen des tokens d'une URL.
+            Calcule l'embedding moyen pour une liste de tokens par URL.
+            Retourne un DataFrame où chaque ligne correspond à une URL
+            et contient un vecteur de dimension 300.
+            
+            Parameters:
+            - url_tokens_list: liste de listes de tokens (chaque sous-liste représente les tokens d'une URL)
+            
+            Returns:
+            - DataFrame (nb_urls, 300)
             """
-            token_embeddings = [word2vecmodel[token] for token in url_tokens if token in word2vecmodel]
-            if token_embeddings:
-                return np.mean(token_embeddings, axis=0)  
-            else:
-                return np.zeros(word2vecmodel.vector_size)
+            embeddings = [] 
+            
+            for url_tokens in url_tokens_list: 
+                token_embeddings = []  
+                
+                for tld in url_tokens:  
+                    token = None
+                    n = len(tld)
+                    i = 0
+                  
+                    if tld in word2vecmodel:
+                        token = word2vecmodel[tld]
+                    else:
+                       
+                        while i < n:
+                            sub_token = ""
+                            for j in range(i, n):
+                                sub_token += tld[j]
+                                if sub_token in word2vecmodel:
+                                    token = word2vecmodel[sub_token]
+                                    break
+                            i += 1
+                    
+                  
+                    if token is not None:
+                        token_embeddings.append(token)
+                
+              
+                if token_embeddings:
+                    mean_embedding = np.mean(token_embeddings, axis=0)
+                else:
+                    mean_embedding = np.zeros(word2vecmodel.vector_size)
+                
+                embeddings.append(mean_embedding)
+            
+            
+            return pd.DataFrame(embeddings, columns=[f"Word2Vec_{i}" for i in range(word2vecmodel.vector_size)])
 
 
         wv = preprocess_url(input_data.url)
-        print(wv)
         word2vec_var = get_url_embedding(wv)
-        print(word2vec_var)
-        df = pd.DataFrame([word2vec_var], columns=[f"Word2Vec_{i}" for i in range(1, 301)])
-
-        word2vec_var_df = pd.DataFrame(word2vec_var)
         
-        print(word2vec_var_df)
+        
+        
         ##  Sauvegarde word2vec dans .csv
-        df.to_csv("./Dataset/Word2Vec_Test.csv")
-
-        res = pd.concat([df, ohencoder_df], axis=1)
-
+        word2vec_var.to_csv("../Dataset/Word2Vec_Test.csv")
+        word2vec_var.index=ohencoder_df.index
+        res = pd.concat([word2vec_var, ohencoder_df], axis=1)
+        res.to_csv("../test.csv")
         resultat = res.to_dict(orient="records")
 
-        emissions =  tracker.stop()
+        # emissions =  tracker.stop()
      
-        print(f"Carbon emissions for the code word2vec: {emissions} kg CO2")
+        # print(f"Carbon emissions for the code word2vec: {emissions} kg CO2")
 
         return {"message": "Dataset traité avec succès", "processed_data": resultat }
 
     except Exception as e:
-        emissions =  tracker.stop()
-        print(f"Carbon emissions for the code Onehot_encoder: {emissions} kg CO2")
+        # emissions =  tracker.stop()
+        # print(f"Carbon emissions for the code Onehot_encoder: {emissions} kg CO2")
         return {"error": f"Erreur lors du traitement : {str(e)}"}
 
 if __name__ == "__main__":
