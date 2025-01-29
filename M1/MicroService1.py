@@ -146,8 +146,8 @@ async def Word2Vecdef(input_data: DatasetInput):
         
         ##  Sauvegarde word2vec dans .csv
         word2vec_var.to_csv("./Dataset/Word2Vec_Test.csv")
-        word2vec_var.index=ohencoder_df.index
-        res = pd.concat([word2vec_var, ohencoder_df], axis=1)
+        ohencoder_df.index=word2vec_var.index
+        res = pd.concat([ohencoder_df, word2vec_var], axis=1)
         ss.index=res.index
         res=pd.concat([ss,res],axis=1)
         res.to_csv("../test.csv")

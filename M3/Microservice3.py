@@ -1,4 +1,5 @@
 import pandas as pd
+import joblib
 from joblib import load
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -17,20 +18,30 @@ class DatasetInput(BaseModel):
 @app.post("/predict/")
 async def predict(input_data: DatasetInput):
     try:
-        ad_images=input_data.m3
-        word2vec=input_data.m2
-        word2vec_len_bert = pd.DataFrame([word2vec.values] * len(ad_images), columns=word2vec.columns).reset_index(drop=True)
+        print(input_data.m3)
+        ad_images=pd.DataFrame(input_data.m3)
+        print("bert")
+        word2vec=pd.DataFrame(input_data.m2)
+        word2vec=word2vec.squeeze()
+        print("url")
+        word2vec_len_bert = pd.DataFrame([word2vec] * len(ad_images))
+        word2vec_len_bert.index=ad_images.index
 
-        urls = pd.concat([word2vec_len_bert, word2vec_len_bert], axis=1)
-
-        dataset = pd.concat([urls, ad_images], axis=1)
-
-        Malvertising_Model=load("./Best_Model.joblib")
-
+        dataset = pd.concat([word2vec_len_bert, ad_images], axis=1)
+        print("concat")
+        # Malvertising_Model = joblib.load("./M3/Best_Model.joblib")
+        Malvertising_Model = joblib.load("/home/asus/Bureau/Malvertising_Detection/M3/Best_Model.joblib")
+        print("debug")
+        col=pd.read_csv("./M3/X_test.csv")
+        dataset.columns=col.columns
+    
+        print("ok")
         y_pred=Malvertising_Model.predict(dataset)
-        y_pred=y_pred.astype(bool)
-        y_pred_df = pd.DataFrame(y_pred, columns=['Phising'], index=dataset.index)
-        resultat = pd.concat([dataset[['ad_screenshot_text']], y_pred_df], axis=1)
+        print("prediction")
+        resultat = pd.DataFrame(y_pred, columns=['Phising'], index=dataset.index)
+        print("presk fini")
+        print(resultat)
+        result = resultat.to_dict(orient="records")
 
         for row in resultat.iterrows():
             if row['phishing'] == 0:      
