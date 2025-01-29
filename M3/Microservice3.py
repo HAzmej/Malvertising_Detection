@@ -41,10 +41,10 @@ async def predict(input_data: DatasetInput):
         resultat = pd.DataFrame(y_pred, columns=['Phising'], index=dataset.index)
         print("presk fini")
         print(resultat)
-        result = resultat.to_dict(orient="records")
+        #result = resultat.to_dict(orient="records")
 
-        for row in resultat.iterrows():
-            if row['phishing'] == 0:      
+        for val in resultat["Phising"]:
+            if val == 1:
                 return {"message": "Dataset traité avec succès", "processed_data": "-1"}
         return {"message": "Dataset traité avec succès", "processed_data": "1"}
 
