@@ -40,7 +40,7 @@ class ScreenshotFolderInput(BaseModel):
 async def EasyOCRBERT(input_data: ScreenshotFolderInput):
     try:
         repo_url = "https://github.com/ImadBKZZ/Data.git"
-        local_repo_path = "./"
+        local_repo_path = "./Data"
         base_folder = pull_repository(repo_url, local_repo_path)
 
         #input_data = "/home/asus/Bureau/ExtensionMalvertising_2/images"
