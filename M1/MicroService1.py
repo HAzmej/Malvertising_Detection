@@ -19,7 +19,7 @@ class DatasetInput(BaseModel):
 @app.post("/Word2Vec/")
 async def Word2Vecdef(input_data: DatasetInput):
     try:
-        tracker = EmissionsTracker(output_dir="./")
+        tracker = EmissionsTracker(output_dir="./M1/")
         tracker.start()
         #####   feature engineering standard scaler
 
@@ -78,7 +78,7 @@ async def Word2Vecdef(input_data: DatasetInput):
         print(f"Carbon emissions for the code Onehot_encoder: {emissions} kg CO2")
         
         # #######     word2vec
-        tracker = EmissionsTracker(output_dir="./")
+        tracker = EmissionsTracker(output_dir="./M1/")
         tracker.start()
 
         ###     Load modele pré entrainé recupere sur 3 millions de github

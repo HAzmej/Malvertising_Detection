@@ -4,6 +4,7 @@ from joblib import load
 from fastapi import FastAPI
 from pydantic import BaseModel
 import time
+from codecarbon import EmissionsTracker 
 from typing import List, Dict, Union
 
 app = FastAPI()
@@ -18,7 +19,9 @@ class DatasetInput(BaseModel):
 @app.post("/predict/")
 async def predict(input_data: DatasetInput):
     try:
-        print(input_data.m3)
+        tracker = EmissionsTracker(output_dir="./M3/")
+        tracker.start()
+
         ad_images=pd.DataFrame(input_data.m3)
         print("bert")
         word2vec=pd.DataFrame(input_data.m2)
@@ -43,12 +46,17 @@ async def predict(input_data: DatasetInput):
         print(resultat)
         #result = resultat.to_dict(orient="records")
 
+        emissions = tracker.stop()
+
+        print(f"Carbon emissions for the code bert: {emissions} kg CO2")
+
         for val in resultat["Phising"]:
             if val == 1:
                 return {"message": "Dataset traité avec succès", "processed_data": "-1"}
         return {"message": "Dataset traité avec succès", "processed_data": "1"}
-
     except Exception as e:
+        emissions = tracker.stop()
+        print(f"Carbon emissions for the code bert: {emissions} kg CO2")
         return {"error": f"Erreur lors du traitement : {str(e)}"}
 
 if __name__ == "__main__":

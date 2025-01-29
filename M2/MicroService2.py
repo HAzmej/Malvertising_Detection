@@ -75,7 +75,7 @@ async def EasyOCRBERT(input_data: ScreenshotFolderInput):
         #input_data = "/home/asus/Bureau/ExtensionMalvertising_2/images"
 
         print("IN") 
-        tracker = EmissionsTracker(output_dir="./")
+        tracker = EmissionsTracker(output_dir="./M2/")
         tracker.start()
 
 
@@ -109,7 +109,7 @@ async def EasyOCRBERT(input_data: ScreenshotFolderInput):
 
         print(f"Carbon emissions for the code easyocr: {emissions} kg CO2")
 
-        tracker = EmissionsTracker(output_dir="./")
+        tracker = EmissionsTracker(output_dir="./M2/")
         tracker.start()
         ### BERT
         ad_screenshot_text, bert = BERT_transform(ad_screenshot_text)
