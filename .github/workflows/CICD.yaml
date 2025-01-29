@@ -21,7 +21,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t mongisaad/micro1:latest -f ./M1/Dockerfile ./M1
+          docker build -t mongisaad/micro1:latest -f ./M1/Dockerfile 
       
       - name: Push Docker image to Docker Hub
         env:
