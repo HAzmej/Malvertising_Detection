@@ -5,7 +5,7 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Copier les fichiers requis dans le conteneur
-COPY MicroService1.py ./MicroService1.py
+COPY M1/MicroService1.py ./MicroService1.py
 
 # Installer les dépendances requises
 COPY M1/requirements.txt ./requirements.txt
