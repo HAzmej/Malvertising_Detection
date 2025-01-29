@@ -6,9 +6,6 @@ WORKDIR /app
 
 # Copier les fichiers requis dans le conteneur
 COPY MicroService1.py ./MicroService1.py
-COPY features.py ./features.py
-COPY tld.txt ./tld.txt
-COPY StandardScaler.joblib ./StandardScaler.joblib
 
 # Installer les dépendances requises
 COPY M1/requirements.txt ./requirements.txt
