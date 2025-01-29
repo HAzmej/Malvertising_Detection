@@ -21,7 +21,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t mongisaad/micro1:latest ./M1
+          docker build -t mongisaad/micro1:latest 
 
       - name: Push Docker image to Docker Hub
         env:
@@ -40,7 +40,7 @@ jobs:
 
       - name: Setup Kubeconfig
         run: |
-          echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
+          echo "${{ secrets.KUBECONFIG }}" 
           export KUBECONFIG=kubeconfig
 
       - name: Deploy to Kubernetes
