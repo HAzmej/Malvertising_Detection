@@ -11,7 +11,7 @@ COPY tld.txt ./tld.txt
 COPY StandardScaler.joblib ./StandardScaler.joblib
 
 # Installer les dépendances requises
-COPY requirements.txt ./requirements.txt
+COPY M1/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Exposer le port sur lequel FastAPI sera exécuté
