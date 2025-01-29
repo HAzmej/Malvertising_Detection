@@ -21,14 +21,14 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t mongisaad/micro1:latest ./M1
+          docker build -t mongisaad/micro1:latest .
 
       - name: Push Docker image to Docker Hub
         env:
           DOCKER_USERNAME: mongisaad
           DOCKER_PASSWORD: ${{ secrets.mongisaad }}
         run: |
-          echo $DOCKER_PASSWORD | docker login -u mongisaad --password-stdin
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker push mongisaad/micro1:latest
 
   deploy:
@@ -45,4 +45,4 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f micro1_deployment.yaml ./M1
+          kubectl apply -f micro1_deployment.yaml

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice1-deployment
+  labels:
+    app: microservice1
+spec:
+  replicas: 1  # Nombre de réplicas pour le déploiement
+  selector:
+    matchLabels:
+      app: microservice1
+  template:
+    metadata:
+      labels:
+        app: microservice1
+    spec:
+      containers:
+      - name: microservice1-container
+        image: mongisaad/micro1:latest
+        ports:
+        - containerPort: 50002
+        resources:  # Optionnel : définir des limites de ressources
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+        env:  # Variables d'environnement si nécessaires
+        - name: ENV
+          value: "production"
+        volumeMounts:  # Optionnel : monter des volumes si nécessaires
+        - name: dataset-volume
+          mountPath: /app/Dataset
+      volumes:  # Optionnel : configurer des volumes persistants
+      - name: dataset-volume
+        emptyDir: {}
