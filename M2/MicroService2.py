@@ -1,4 +1,6 @@
 import fastapi
+import glob
+import shutil
 from fastapi import FastAPI
 from pydantic import BaseModel
 import pandas as pd
@@ -31,6 +33,29 @@ def pull_repository(repo_url, local_path):
     # Retourne le chemin du premier sous-dossier trouvé
     return os.path.join(local_path, subfolders[0])
 
+def collect_images(repo_path, destination_folder):
+    """
+    Recherche et copie toutes les images `.webp` depuis `scraped_ads` vers `destination_folder`.
+    """
+    scraped_ads_path = os.path.join(repo_path, "scraped_ads")
+    
+    if not os.path.exists(scraped_ads_path):
+        raise Exception("Dossier 'scraped_ads' non trouvé dans le dépôt.")
+
+    # Créer le dossier de destination s'il n'existe pas
+    os.makedirs(destination_folder, exist_ok=True)
+
+    image_count = 0
+    for ad_folder in os.scandir(scraped_ads_path):
+        if ad_folder.is_dir() and ad_folder.name.startswith("ad_"):
+            for image_file in os.scandir(ad_folder.path):
+                if image_file.is_file() and image_file.name.endswith(".webp"):
+                    new_image_name = f"image_{image_count}.webp"
+                    shutil.copy(image_file.path, os.path.join(destination_folder, new_image_name))
+                    image_count += 1
+
+    return image_count  # Nombre d'images copiées
+
 app = FastAPI()
 #####je change pour l'appliquer 
 class ScreenshotFolderInput(BaseModel):
@@ -42,6 +67,10 @@ async def EasyOCRBERT(input_data: ScreenshotFolderInput):
         repo_url = "https://github.com/ImadBKZZ/Data.git"
         local_repo_path = "./Data"
         base_folder = pull_repository(repo_url, local_repo_path)
+        print(base_folder)
+        collect_images(base_folder, local_repo_path)
+        base_folder = os.path.dirname(base_folder) 
+
 
         #input_data = "/home/asus/Bureau/ExtensionMalvertising_2/images"
 
@@ -84,6 +113,9 @@ async def EasyOCRBERT(input_data: ScreenshotFolderInput):
         tracker.start()
         ### BERT
         ad_screenshot_text, bert = BERT_transform(ad_screenshot_text)
+
+        for fichier in glob.glob(os.path.join(base_folder, "*.webp")):
+            os.remove(fichier)
 
         # Convertir le DataFrame en JSON pour le retour
         
