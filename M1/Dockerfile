@@ -8,7 +8,6 @@ WORKDIR /app
 COPY MicroService1.py ./MicroService1.py
 COPY features.py ./features.py
 COPY tld.txt ./tld.txt
-COPY GoogleNews-vectors-negative300.bin ./GoogleNews-vectors-negative300.bin
 COPY StandardScaler.joblib ./StandardScaler.joblib
 
 # Installer les dépendances requises
